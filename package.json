@@ -1,0 +1,27 @@
+{
+	"name": "nodejs-crud-api",
+	"version": "1.0.0",
+	"description": "test task from RSSchool",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"start": "node ./src"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/DrabantBY/nodejs-crud-api.git"
+	},
+	"keywords": [
+		"node.js",
+		"javascript",
+		"typescript",
+		"DrabantBY",
+		"RSSchool"
+	],
+	"author": "DrabantBY",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/DrabantBY/nodejs-crud-api/issues"
+	},
+	"homepage": "https://github.com/DrabantBY/nodejs-crud-api#readme"
+}
