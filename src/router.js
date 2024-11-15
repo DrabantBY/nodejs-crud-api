@@ -1,18 +1,18 @@
 import UUID_REGEXP from './constants/uuidRegExp.js';
-import { users } from './db.js';
+import sendNotFound from './handlers/sendNotFound.js';
+import getAllUsers from './handlers/getAllUsers.js';
+import getUserById from './handlers/getUserById.js';
 
 const staticRoutes = {
-	'/api/users': (req, res) => {
-		return users;
-	},
-	'/api/users/:id': (req, res, userId) => {
-		return users.find(({ id }) => id === userId);
-	},
+	'/api/users': getAllUsers,
+	'/api/users/:id': getUserById,
 };
 
 const routeHandlerTypes = {
-	function: (req, res, id, callback) => JSON.stringify(callback(req, res, id)),
-	undefined: (req, res) => '404: Page is not exist',
+	function: (req, res, id, callback) => {
+		callback(req, res, id);
+	},
+	undefined: sendNotFound,
 };
 
 const dynamicRoutes = [];
@@ -30,7 +30,7 @@ for (const key in staticRoutes) {
 const router = (req, res) => {
 	const route = req.url.replace(/(?=.)\/+$/, '');
 
-	let callback = staticRoutes[route];
+	let callback = staticRoutes[route || '/'];
 	let userId;
 
 	if (!callback) {
