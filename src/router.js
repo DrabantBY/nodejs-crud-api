@@ -1,4 +1,4 @@
-import UUID_REGEXP from './constants/uuidRegExp.js';
+import { UUID, SLASH } from './constants/regexp.js';
 import sendNotFound from './handlers/sendNotFound.js';
 import getAllUsers from './handlers/getAllUsers.js';
 import getUserById from './handlers/getUserById.js';
@@ -19,7 +19,7 @@ const dynamicRoutes = [];
 
 for (const key in staticRoutes) {
 	if (Object.hasOwn(staticRoutes, key) && key.endsWith(':id')) {
-		const regexp = new RegExp(`^${key.replace(':id', UUID_REGEXP)}$`);
+		const regexp = new RegExp(`^${key.replace(':id', UUID)}$`);
 
 		dynamicRoutes.push([regexp, staticRoutes[key]]);
 
@@ -28,7 +28,9 @@ for (const key in staticRoutes) {
 }
 
 const router = (req, res) => {
-	const route = req.url.replace(/(?=.)\/+$/, '');
+	res.setHeader('Content-Type', 'application/json');
+
+	const route = req.url.replace(SLASH, '');
 
 	let callback = staticRoutes[route || '/'];
 	let userId;
@@ -39,7 +41,7 @@ const router = (req, res) => {
 			const isDynamicRoute = regexp.test(route);
 
 			if (isDynamicRoute) {
-				userId = route.match(UUID_REGEXP)[0];
+				userId = route.match(UUID)[0];
 				callback = dynamicRouteHandler;
 				break;
 			}
