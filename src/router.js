@@ -1,11 +1,11 @@
-import { UUID, SLASH } from './constants/regexp.js';
+import { UUID, END_SLASH } from './constants/regexp.js';
 import sendNotFound from './handlers/sendNotFound.js';
-import getAllUsers from './handlers/getAllUsers.js';
-import getUserById from './handlers/getUserById.js';
+import handleAllUsers from './handlers/handleAllUsers.js';
+import handleUserId from './handlers/handleUserId.js';
 
 const staticRoutes = {
-	'/api/users': getAllUsers,
-	'/api/users/:id': getUserById,
+	'/api/users': handleAllUsers,
+	'/api/users/{userId}': handleUserId,
 };
 
 const routeHandlerTypes = {
@@ -18,8 +18,8 @@ const routeHandlerTypes = {
 const dynamicRoutes = [];
 
 for (const key in staticRoutes) {
-	if (Object.hasOwn(staticRoutes, key) && key.endsWith(':id')) {
-		const regexp = new RegExp(`^${key.replace(':id', UUID)}$`);
+	if (Object.hasOwn(staticRoutes, key) && key.endsWith('{userId}')) {
+		const regexp = new RegExp(`^${key.replace('{userId}', UUID)}$`);
 
 		dynamicRoutes.push([regexp, staticRoutes[key]]);
 
@@ -30,7 +30,7 @@ for (const key in staticRoutes) {
 const router = (req, res) => {
 	res.setHeader('Content-Type', 'application/json');
 
-	const route = req.url.replace(SLASH, '');
+	const route = req.url.replace(END_SLASH, '');
 
 	let callback = staticRoutes[route || '/'];
 	let userId;
