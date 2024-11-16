@@ -1,7 +1,12 @@
-const checkUser = (user) => {
+const checkUser = (user, method) => {
 	const arr = Object.entries(user);
 
-	let isValidUser = arr.length === 3;
+	let isValidUser =
+		method === 'post'
+			? arr.length === 3
+			: method === 'put'
+			? arr.length <= 3
+			: false;
 
 	if (!isValidUser) {
 		return isValidUser;

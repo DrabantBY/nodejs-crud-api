@@ -6,7 +6,7 @@ import finfishResp from '../utils/finishResp.js';
 const handleAllUsers = (req, res) => {
 	switch (req.method) {
 		case 'GET':
-			res.end(JSON.stringify(users));
+			res.end(JSON.stringify([...users.values()]));
 			break;
 
 		case 'POST':
@@ -24,11 +24,12 @@ const handleAllUsers = (req, res) => {
 				try {
 					const user = JSON.parse(body);
 
-					const isValidUser = checkUser(user);
+					const isValidUser = checkUser(user, 'post');
 
 					if (isValidUser) {
 						user.id = uuid();
-						users.push(user);
+						users.set(user.id, user);
+
 						finfishResp(res, 201, 'user successfully created');
 					} else {
 						finfishResp(res, 400, 'user has invalid data');
