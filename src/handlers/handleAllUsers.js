@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { users } from '../db.js';
 import checkUser from '../utils/checkUser.js';
-import finfishResp from '../utils/finishResp.js';
+import finishResp from '../utils/finishResp.js';
 
 const handleAllUsers = (req, res) => {
 	switch (req.method) {
@@ -17,7 +17,7 @@ const handleAllUsers = (req, res) => {
 			});
 
 			req.on('error', () => {
-				finfishResp(res, 500, 'internal server error');
+				finishResp(res, 500, 'internal server error');
 			});
 
 			req.on('end', () => {
@@ -30,19 +30,19 @@ const handleAllUsers = (req, res) => {
 						user.id = uuid();
 						users.set(user.id, user);
 
-						finfishResp(res, 201, 'user successfully created');
+						finishResp(res, 201, 'user successfully created');
 					} else {
-						finfishResp(res, 400, 'user has invalid data');
+						finishResp(res, 400, 'user has invalid data');
 					}
 				} catch {
-					finfishResp(res, 500, 'internal server error');
+					finishResp(res, 500, 'internal server error');
 				}
 			});
 
 			break;
 
 		default:
-			finfishResp(res, 501, 'method not implemented');
+			finishResp(res, 501, 'method not implemented');
 	}
 };
 

@@ -1,5 +1,5 @@
 import { users } from '../db.js';
-import finfishResp from '../utils/finishResp.js';
+import finishResp from '../utils/finishResp.js';
 import checkUser from '../utils/checkUser.js';
 
 const handleUserId = (req, res, userId) => {
@@ -11,7 +11,7 @@ const handleUserId = (req, res, userId) => {
 
 			case 'DELETE':
 				users.delete(userId);
-				finfishResp(res, 204, 'user successfully deleted');
+				finishResp(res, 204, 'user successfully deleted');
 				break;
 
 			case 'PUT':
@@ -22,7 +22,7 @@ const handleUserId = (req, res, userId) => {
 				});
 
 				req.on('error', () => {
-					finfishResp(res, 500, 'internal server error');
+					finishResp(res, 500, 'internal server error');
 				});
 
 				req.on('end', () => {
@@ -35,22 +35,22 @@ const handleUserId = (req, res, userId) => {
 							const user = users.get(userId);
 							users.set(userId, { ...user, ...data });
 
-							finfishResp(res, 200, 'user successfully updated');
+							finishResp(res, 200, 'user successfully updated');
 						} else {
-							finfishResp(res, 400, 'user has invalid data');
+							finishResp(res, 400, 'user has invalid data');
 						}
 					} catch {
-						finfishResp(res, 500, 'internal server error');
+						finishResp(res, 500, 'internal server error');
 					}
 				});
 
 				break;
 
 			default:
-				finfishResp(res, 501, 'method not implemented');
+				finishResp(res, 501, 'method not implemented');
 		}
 	} else {
-		finfishResp(res, 404, 'user is not exist');
+		finishResp(res, 404, 'user not exist');
 	}
 };
 

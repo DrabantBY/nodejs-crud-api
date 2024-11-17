@@ -1,7 +1,7 @@
-import { UUID, END_SLASH } from './constants/regexp.js';
 import sendNotFound from './handlers/sendNotFound.js';
 import handleAllUsers from './handlers/handleAllUsers.js';
 import handleUserId from './handlers/handleUserId.js';
+import { UUID, END_SLASH } from './constants/regexp.js';
 
 const staticRoutes = {
 	'/api/users': handleAllUsers,
