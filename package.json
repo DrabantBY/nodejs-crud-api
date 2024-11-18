@@ -3,11 +3,11 @@
 	"version": "1.0.0",
 	"description": "test task from RSSchool",
 	"type": "module",
-	"main": "index.js",
+	"main": "./src/index.ts",
 	"scripts": {
-		"start:dev": "nodemon ./src",
-		"start:prod": "webpack && node dist/bundle.cjs",
-		"start:multi": "node ./src/cluster.js"
+		"start:dev": "nodemon",
+		"start:prod": "tsc",
+		"start:multi": "node --loader ts-node/esm ./src/cluster.ts"
 	},
 	"repository": {
 		"type": "git",
@@ -26,10 +26,12 @@
 	},
 	"homepage": "https://github.com/DrabantBY/nodejs-crud-api#readme",
 	"devDependencies": {
+		"@types/node": "^22.9.0",
+		"@types/uuid": "^10.0.0",
 		"nodemon": "^3.1.7",
-		"webpack": "^5.96.1",
-		"webpack-cli": "^5.1.4",
-		"webpack-node-externals": "^3.0.0"
+		"ts-node": "^10.9.2",
+		"tslib": "^2.8.1",
+		"typescript": "^5.6.3"
 	},
 	"dependencies": {
 		"dotenv": "^16.4.5",

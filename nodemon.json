@@ -1,6 +1,7 @@
 {
 	"verbose": true,
 	"watch": ["src"],
-	"ext": "js",
-	"ignore": ["src/**/*.spec.js"]
+	"ext": "ts",
+	"ignore": ["node_modules", "dist"],
+	"exec": "node --loader ts-node/esm src/index.ts"
 }

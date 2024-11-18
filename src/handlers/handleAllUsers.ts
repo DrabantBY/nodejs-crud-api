@@ -1,9 +1,10 @@
 import { v4 as uuid } from 'uuid';
-import { users } from '../db.js';
-import checkUser from '../utils/checkUser.js';
-import finishResp from '../utils/finishResp.js';
+import { users } from '../db.ts';
+import checkUser from '../utils/checkUser.ts';
+import finishResp from '../utils/finishResp.ts';
+import type { Handler, User } from '../types.ts';
 
-const handleAllUsers = (req, res) => {
+const handleAllUsers: Handler = (req, res) => {
 	switch (req.method) {
 		case 'GET':
 			res.end(JSON.stringify([...users.values()]));
@@ -22,7 +23,7 @@ const handleAllUsers = (req, res) => {
 
 			req.on('end', () => {
 				try {
-					const user = JSON.parse(body);
+					const user = JSON.parse(body) as User;
 
 					const isValidUser = checkUser(user, 'post');
 

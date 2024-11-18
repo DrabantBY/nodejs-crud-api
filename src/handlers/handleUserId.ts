@@ -1,16 +1,17 @@
-import { users } from '../db.js';
-import finishResp from '../utils/finishResp.js';
-import checkUser from '../utils/checkUser.js';
+import { users } from '../db.ts';
+import finishResp from '../utils/finishResp.ts';
+import checkUser from '../utils/checkUser.ts';
+import type { User, Handler } from '../types.ts';
 
-const handleUserId = (req, res, userId) => {
-	if (users.has(userId)) {
+const handleUserId: Handler = (req, res, userId) => {
+	if (userId && users.has(userId)) {
 		switch (req.method) {
 			case 'GET':
 				res.end(JSON.stringify(users.get(userId)));
 				break;
 
 			case 'DELETE':
-				users.delete(userId);
+				users.delete(userId!);
 				finishResp(res, 204, 'user successfully deleted');
 				break;
 
@@ -27,12 +28,12 @@ const handleUserId = (req, res, userId) => {
 
 				req.on('end', () => {
 					try {
-						const data = JSON.parse(body);
+						const data = JSON.parse(body) as User;
 
 						const isValidData = checkUser(data, 'put');
 
 						if (isValidData) {
-							const user = users.get(userId);
+							const user = users.get(userId)!;
 							users.set(userId, { ...user, ...data });
 
 							finishResp(res, 200, 'user successfully updated');

@@ -1,8 +1,8 @@
 import { availableParallelism } from 'node:os';
 import cluster from 'node:cluster';
-import runHttpServer from './server.js';
+import runHttpServer from './server.ts';
 
-const PORT = parseInt(process.env.PORT) || 4000;
+const PORT = Number(process.env.PORT ?? '') || 4000;
 
 if (cluster.isPrimary) {
 	const count = availableParallelism();
@@ -14,5 +14,5 @@ if (cluster.isPrimary) {
 		cluster.fork();
 	}
 } else {
-	runHttpServer(PORT + cluster.worker.id - 1);
+	runHttpServer(PORT + cluster!.worker!.id - 1);
 }

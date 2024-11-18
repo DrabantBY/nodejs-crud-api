@@ -1,4 +1,6 @@
-const checkUser = (user, method) => {
+import type { User } from '../types.ts';
+
+const checkUser = (user: User, method: string): boolean => {
 	const arr = Object.entries(user);
 
 	let isValidUser =
@@ -15,7 +17,10 @@ const checkUser = (user, method) => {
 	arr.forEach(([key, val]) => {
 		isValidUser =
 			(key === 'username' && typeof val === 'string' && val.length > 0) ||
-			(key === 'age' && Number.isInteger(val) && val > 0) ||
+			(key === 'age' &&
+				typeof val === 'number' &&
+				Number.isInteger(val) &&
+				val > 0) ||
 			(key === 'hobbies' &&
 				Array.isArray(val) &&
 				val.every((v) => typeof v === 'string'));
