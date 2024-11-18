@@ -1,10 +1,12 @@
 import { createServer } from 'node:http';
 import router from './router.ts';
 
+const server = createServer(router);
+
 const runHttpServer = (port: number): void => {
-	createServer(router).listen(port, () => {
-		console.log(`server is running: process id: ${process.pid}, port: ${port}`);
+	server.listen(port, () => {
+		console.log(`\nserver is running: pid ${process.pid}, port ${port}`);
 	});
 };
 
-export default runHttpServer;
+export { server, runHttpServer };

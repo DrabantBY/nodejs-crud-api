@@ -1,6 +1,6 @@
-import { availableParallelism } from 'node:os';
 import cluster from 'node:cluster';
-import runHttpServer from './server.ts';
+import { availableParallelism } from 'node:os';
+import { runHttpServer } from './server.ts';
 
 const PORT = Number(process.env.PORT ?? '') || 4000;
 
