@@ -13,6 +13,6 @@
 		"allowImportingTsExtensions": true,
 		"noEmit": true
 	},
-	"include": ["src"],
+	"include": ["src", "loader.ts"],
 	"exclude": ["node_modules", "dist"]
 }
