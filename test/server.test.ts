@@ -58,3 +58,86 @@ describe('test server by route /api/users', () => {
 		});
 	});
 });
+
+describe('test server by route /api/users/{userId}', () => {
+	let userId: string;
+
+	beforeAll(async () => {
+		await request(server).post('/api/users').send(user);
+		const { body } = await request(server).get('/api/users');
+		userId = body[0].id;
+	});
+
+	it('should get user', async () => {
+		const { status, body } = await request(server).get(`/api/users/${userId}`);
+
+		expect(status).toBe(200);
+		expect(validate(body.id)).toBe(true);
+		expect(body.id).toBe(userId);
+		expect(body).toMatchObject(user);
+	});
+
+	it('should update user', async () => {
+		const { status, body } = await request(server)
+			.put(`/api/users/${userId}`)
+			.send({ username: 'John' });
+
+		expect(status).toBe(200);
+		expect(body).toMatchObject({
+			code: 200,
+			message: 'user successfully updated',
+		});
+	});
+
+	it('should get updated user', async () => {
+		const { status, body } = await request(server).get(`/api/users/${userId}`);
+
+		expect(status).toBe(200);
+		expect(validate(body.id)).toBe(true);
+		expect(body.id).toBe(userId);
+		expect(body.username).toBe('John');
+	});
+
+	it('should be error by put invalid data', async () => {
+		const { status, body } = await request(server)
+			.put(`/api/users/${userId}`)
+			.send({ hobbies: 'stalker2' });
+
+		expect(status).toBe(400);
+		expect(body).toMatchObject({
+			code: 400,
+			message: 'user has invalid data',
+		});
+	});
+
+	it('should be error on unimplemented method', async () => {
+		const { status, body } = await request(server)
+			.patch(`/api/users/${userId}`)
+			.send({ username: 'John' });
+
+		expect(status).toBe(501);
+		expect(body).toMatchObject({
+			code: 501,
+			message: 'method not implemented',
+		});
+	});
+
+	it('should delete user', async () => {
+		const { status, body } = await request(server).delete(
+			`/api/users/${userId}`
+		);
+
+		expect(status).toBe(204);
+		expect(body).toBe('');
+	});
+
+	it('should be error if user does not exist', async () => {
+		const { status, body } = await request(server).get(`/api/users/${userId}`);
+
+		expect(status).toBe(404);
+		expect(body).toMatchObject({
+			code: 404,
+			message: 'user not exist',
+		});
+	});
+});
