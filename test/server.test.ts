@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { validate } from 'uuid';
 import { server } from '../src/server';
+import type { Response } from 'supertest';
 
 const user = {
 	username: 'Eugene',
@@ -8,23 +9,29 @@ const user = {
 	hobbies: ['next.js', 'angular', 'node.js'],
 };
 
+const checkResponse = (
+	{ status, body }: Response,
+	code: number,
+	message: string
+) => {
+	expect(status).toBe(code);
+	expect(body).toMatchObject({
+		code,
+		message,
+	});
+};
+
 describe('test server by route /api/users', () => {
 	it('should get empty user list', async () => {
 		const { status, body } = await request(server).get('/api/users');
+
 		expect(status).toBe(200);
 		expect(body).toEqual([]);
 	});
 
 	it('should post new user', async () => {
-		const { status, body } = await request(server)
-			.post('/api/users')
-			.send(user);
-
-		expect(status).toBe(201);
-		expect(body).toMatchObject({
-			code: 201,
-			message: 'user successfully created',
-		});
+		const response = await request(server).post('/api/users').send(user);
+		checkResponse(response, 201, 'user successfully created');
 	});
 
 	it('should get new user list', async () => {
@@ -37,25 +44,13 @@ describe('test server by route /api/users', () => {
 	});
 
 	it('should be error on unimplemented method', async () => {
-		const { status, body } = await request(server).delete('/api/users');
-
-		expect(status).toBe(501);
-		expect(body).toMatchObject({
-			code: 501,
-			message: 'method not implemented',
-		});
+		const response = await request(server).delete('/api/users');
+		checkResponse(response, 501, 'method not implemented');
 	});
 
 	it('should be error by post invalid data', async () => {
-		const { status, body } = await request(server)
-			.post('/api/users')
-			.send({ age: 20 });
-
-		expect(status).toBe(400);
-		expect(body).toMatchObject({
-			code: 400,
-			message: 'user has invalid data',
-		});
+		const response = await request(server).post('/api/users').send({ age: 20 });
+		checkResponse(response, 400, 'user has invalid data');
 	});
 });
 
@@ -78,15 +73,11 @@ describe('test server by route /api/users/{userId}', () => {
 	});
 
 	it('should update user', async () => {
-		const { status, body } = await request(server)
+		const response = await request(server)
 			.put(`/api/users/${userId}`)
 			.send({ username: 'John' });
 
-		expect(status).toBe(200);
-		expect(body).toMatchObject({
-			code: 200,
-			message: 'user successfully updated',
-		});
+		checkResponse(response, 200, 'user successfully updated');
 	});
 
 	it('should get updated user', async () => {
@@ -99,27 +90,19 @@ describe('test server by route /api/users/{userId}', () => {
 	});
 
 	it('should be error by put invalid data', async () => {
-		const { status, body } = await request(server)
+		const response = await request(server)
 			.put(`/api/users/${userId}`)
 			.send({ hobbies: 'stalker2' });
 
-		expect(status).toBe(400);
-		expect(body).toMatchObject({
-			code: 400,
-			message: 'user has invalid data',
-		});
+		checkResponse(response, 400, 'user has invalid data');
 	});
 
 	it('should be error on unimplemented method', async () => {
-		const { status, body } = await request(server)
+		const response = await request(server)
 			.patch(`/api/users/${userId}`)
 			.send({ username: 'John' });
 
-		expect(status).toBe(501);
-		expect(body).toMatchObject({
-			code: 501,
-			message: 'method not implemented',
-		});
+		checkResponse(response, 501, 'method not implemented');
 	});
 
 	it('should delete user', async () => {
@@ -132,34 +115,19 @@ describe('test server by route /api/users/{userId}', () => {
 	});
 
 	it('should be error if user does not exist', async () => {
-		const { status, body } = await request(server).get(`/api/users/${userId}`);
-
-		expect(status).toBe(404);
-		expect(body).toMatchObject({
-			code: 404,
-			message: 'user not exist',
-		});
+		const response = await request(server).get(`/api/users/${userId}`);
+		checkResponse(response, 404, 'user not exist');
 	});
 });
 
 describe('test common server errors', () => {
 	it('should be error by invalid route', async () => {
-		const { status, body } = await request(server).get('/not/exist/route');
-
-		expect(status).toBe(404);
-		expect(body).toMatchObject({
-			code: 404,
-			message: 'page not exist',
-		});
+		const response = await request(server).get('/not/exist/route');
+		checkResponse(response, 404, 'page not exist');
 	});
 
 	it('should be error by invalid userId', async () => {
-		const { status, body } = await request(server).get('/api/users/userId');
-
-		expect(status).toBe(400);
-		expect(body).toMatchObject({
-			code: 400,
-			message: 'userId not uuid',
-		});
+		const response = await request(server).get('/api/users/userId');
+		checkResponse(response, 400, 'userId not uuid');
 	});
 });
