@@ -7,14 +7,14 @@ const checkUser = (user: User, method: string): boolean => {
 		method === 'post'
 			? arr.length === 3
 			: method === 'put'
-			? arr.length <= 3
+			? arr.length > 0 && arr.length <= 3
 			: false;
 
 	if (!isValidUser) {
 		return isValidUser;
 	}
 
-	arr.forEach(([key, val]) => {
+	for (const [key, val] of arr) {
 		isValidUser =
 			(key === 'username' && typeof val === 'string' && val.length > 0) ||
 			(key === 'age' &&
@@ -24,7 +24,11 @@ const checkUser = (user: User, method: string): boolean => {
 			(key === 'hobbies' &&
 				Array.isArray(val) &&
 				val.every((v) => typeof v === 'string'));
-	});
+
+		if (!isValidUser) {
+			break;
+		}
+	}
 
 	return isValidUser;
 };
