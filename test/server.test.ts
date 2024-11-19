@@ -141,3 +141,25 @@ describe('test server by route /api/users/{userId}', () => {
 		});
 	});
 });
+
+describe('test common server errors', () => {
+	it('should be error by invalid route', async () => {
+		const { status, body } = await request(server).get('/not/exist/route');
+
+		expect(status).toBe(404);
+		expect(body).toMatchObject({
+			code: 404,
+			message: 'page not exist',
+		});
+	});
+
+	it('should be error by invalid userId', async () => {
+		const { status, body } = await request(server).get('/api/users/userId');
+
+		expect(status).toBe(400);
+		expect(body).toMatchObject({
+			code: 400,
+			message: 'userId not uuid',
+		});
+	});
+});
